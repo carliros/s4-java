@@ -1,4 +1,4 @@
-package s4;
+package s4.controller;
 
 /**
  * Created by carlos on 12/18/17.
