@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import s4.model.Student;
+import s4.model.Subject;
 import s4.services.StudentService;
+import s4.services.SubjectService;
+import s4.services.SubjectStudentService;
 import s4.utils.ResponseResult;
 
 import java.util.List;
@@ -19,6 +22,12 @@ public class StudentController {
 
     @Autowired
     private StudentService studentService;
+
+    @Autowired
+    private SubjectService subjectService;
+
+    @Autowired
+    private SubjectStudentService subjectStudentService;
 
     @RequestMapping("/list")
     public List list() {
@@ -55,5 +64,18 @@ public class StudentController {
 
         Integer studentId = studentService.deleteStudent(studentToDelete.get());
         return ResponseEntity.ok(new ResponseResult().returnValue("removedStudentId", studentId));
+    }
+
+    @RequestMapping(value = "/retrieveStudentsForClass/{subjectId}", method = RequestMethod.POST)
+    public ResponseEntity<ResponseResult> getStudentsForClass(@PathVariable Integer subjectId) {
+        Optional<Subject> subject = subjectService.findSubject(subjectId);
+        if (!subject.isPresent()) {
+            return ResponseEntity.ok(new ResponseResult().returnValue("error", "Class does not exist."));
+        }
+
+        List<Student> studentList = subjectStudentService.getStudentsForClass(subjectId);
+        return ResponseEntity.ok(new ResponseResult()
+                .returnValue("studentList", studentList)
+                .returnValue("classTitle", subject.get().getTitle()));
     }
 }
