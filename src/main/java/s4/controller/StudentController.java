@@ -30,8 +30,8 @@ public class StudentController {
     private SubjectStudentService subjectStudentService;
 
     @RequestMapping("/list")
-    public List list() {
-        return studentService.getStudents();
+    public ResponseEntity<ResponseResult> list() {
+        return ResponseEntity.ok(new ResponseResult().returnValue("students", studentService.getStudents()));
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)

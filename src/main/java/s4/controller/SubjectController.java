@@ -29,8 +29,8 @@ public class SubjectController {
     StudentService studentService;
 
     @RequestMapping("/list")
-    public List list() {
-        return subjectService.getSubjects();
+    public ResponseEntity<ResponseResult> list() {
+        return ResponseEntity.ok(new ResponseResult().returnValue("classes", subjectService.getSubjects()));
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
