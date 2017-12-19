@@ -1,10 +1,13 @@
 package s4.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import s4.dao.StudentDao;
 import s4.model.Student;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by carlos on 12/18/17.
@@ -12,14 +15,26 @@ import java.util.List;
 
 @Service
 public class StudentService {
+    @Autowired
+    private StudentDao studentDao;
+
     public List getStudents(){
-        Student pedro = new Student();
-        pedro.setId(1);
-        pedro.setFirstName("Pedro");
-        pedro.setLastName("Gonzales");
+        return studentDao.getStudentList();
+    }
 
-        List studentList = Arrays.asList(pedro);
+    public Integer createStudent(String firstName, String lastName) {
+        return studentDao.createStudent(firstName, lastName);
+    }
 
-        return studentList;
+    public Optional<Student> findStudent(Integer id){
+        return studentDao.findStudent(id);
+    }
+
+    public Integer deleteStudent(Student std){
+        return studentDao.removeStudent(std.getId());
+    }
+
+    public Integer editStudent(Student std) {
+        return studentDao.editStudent(std);
     }
 }
