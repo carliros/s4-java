@@ -8,6 +8,7 @@ import s4.model.Subject;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by carlos on 12/18/17.
@@ -43,5 +44,23 @@ public class SubjectService {
 
     public void registerStudent(Integer subjectId, Integer studentId) {
         subjectStudentDao.registerStudent(subjectId, studentId);
+    }
+
+    public List<Subject> searchByCode(String code) {
+        return subjectDao.getSubjectList().stream()
+                .filter(subject -> subject.getCode().equals(code))
+                .collect(Collectors.toList());
+    }
+
+    public List<Subject> searchByTitle(String title) {
+        return subjectDao.getSubjectList().stream()
+                .filter(subject -> subject.getTitle().equals(title))
+                .collect(Collectors.toList());
+    }
+
+    public List<Subject> searchByDescription(String description) {
+        return subjectDao.getSubjectList().stream()
+                .filter(subject -> subject.getDescription().equals(description))
+                .collect(Collectors.toList());
     }
 }

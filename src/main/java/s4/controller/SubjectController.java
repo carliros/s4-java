@@ -104,4 +104,19 @@ public class SubjectController {
                 .returnValue("subjectList", subjectList)
                 .returnValue("student", student.get().getFirstName()));
     }
+
+    @RequestMapping("/searchByCode/{code}")
+    public ResponseEntity<ResponseResult> searchByCode(@PathVariable String code) {
+        return ResponseEntity.ok(new ResponseResult().returnValue("classes", subjectService.searchByCode(code)));
+    }
+
+    @RequestMapping("/searchByTitle/{title}")
+    public ResponseEntity<ResponseResult> searchByTitle(@PathVariable String title) {
+        return ResponseEntity.ok(new ResponseResult().returnValue("classes", subjectService.searchByTitle(title)));
+    }
+
+    @RequestMapping("/searchByDescription/{description}")
+    public ResponseEntity<ResponseResult> searchByDescription(@PathVariable String description) {
+        return ResponseEntity.ok(new ResponseResult().returnValue("classes", subjectService.searchByDescription(description)));
+    }
 }

@@ -8,6 +8,7 @@ import s4.model.Student;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by carlos on 12/18/17.
@@ -36,5 +37,17 @@ public class StudentService {
 
     public Integer editStudent(Student std) {
         return studentDao.editStudent(std);
+    }
+
+    public List<Student> searchByFirstName(String firstName) {
+        return studentDao.getStudentList().stream()
+                .filter(student -> student.getFirstName().equals(firstName))
+                .collect(Collectors.toList());
+    }
+
+    public List<Student> searchByLastName(String lastName) {
+        return studentDao.getStudentList().stream()
+                .filter(student -> student.getLastName().equals(lastName))
+                .collect(Collectors.toList());
     }
 }

@@ -78,4 +78,14 @@ public class StudentController {
                 .returnValue("studentList", studentList)
                 .returnValue("classTitle", subject.get().getTitle()));
     }
+
+    @RequestMapping("/searchByFirstName/{firstName}")
+    public ResponseEntity<ResponseResult> searchByFirstName(@PathVariable String firstName) {
+        return ResponseEntity.ok(new ResponseResult().returnValue("students", studentService.searchByFirstName(firstName)));
+    }
+
+    @RequestMapping("/searchByLastName/{lastName}")
+    public ResponseEntity<ResponseResult> searchByLastName(@PathVariable String lastName) {
+        return ResponseEntity.ok(new ResponseResult().returnValue("students", studentService.searchByLastName(lastName)));
+    }
 }
