@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import s4.dao.StudentDao;
 import s4.model.Student;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,7 +18,7 @@ public class StudentService {
     @Autowired
     private StudentDao studentDao;
 
-    public List getStudents(){
+    public List getStudents() {
         return studentDao.getStudentList();
     }
 
@@ -27,11 +26,11 @@ public class StudentService {
         return studentDao.createStudent(firstName, lastName);
     }
 
-    public Optional<Student> findStudent(Integer id){
+    public Optional<Student> findStudent(Integer id) {
         return studentDao.findStudent(id);
     }
 
-    public Integer deleteStudent(Student std){
+    public Integer deleteStudent(Student std) {
         return studentDao.removeStudent(std.getId());
     }
 

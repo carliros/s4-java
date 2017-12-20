@@ -26,7 +26,7 @@ public class SubjectStudentDao {
         if (subjectStudentMap.containsKey(subjectId)) {
             studentList = subjectStudentMap.get(subjectId);
         } else {
-            studentList = new HashSet<Integer>();
+            studentList = new HashSet<>();
         }
 
         studentList.add(studentId);
@@ -42,8 +42,8 @@ public class SubjectStudentDao {
 
             studentList = subjectIdSet.stream()
                     .map(studentId -> studentDao.findStudent(studentId))
-                    .filter(optional -> optional.isPresent())
-                    .map(optional -> optional.get())
+                    .filter(Optional<Student>::isPresent)
+                    .map(Optional<Student>::get)
                     .collect(Collectors.toList());
         }
 
@@ -54,8 +54,8 @@ public class SubjectStudentDao {
         List<Subject> subjectList = subjectStudentMap.entrySet().stream()
                 .filter(entry -> entry.getValue().contains(studentId))
                 .map(entry -> subjectDao.findSubject(entry.getKey()))
-                .filter(optional -> optional.isPresent())
-                .map(optional -> optional.get())
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .collect(Collectors.toList());
 
         return subjectList;
