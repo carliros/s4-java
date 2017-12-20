@@ -47,7 +47,7 @@ public class SubjectDao {
             Subject sub = subjectList.get(index);
             if (sub.getId().equals(id)) {
                 subjectList.remove(index);
-                log.info(String.format("Subject with id %d removed.", id));
+                log.info("Subject removed.");
 
                 return Optional.of(id);
             }
@@ -64,7 +64,7 @@ public class SubjectDao {
                 old.setTitle(sub.getTitle());
                 old.setDescription(sub.getDescription());
 
-                log.info(String.format("Subject with Id: %d edited.", old.getId()));
+                log.info("Subject edited.");
                 return Optional.of(old.getId());
             }
         }

@@ -54,7 +54,7 @@ public class StudentDao {
             Student std = studentList.get(index);
             if (std.getId().equals(id)) {
                 studentList.remove(index);
-                log.info(String.format("Student with Student Id: %d removed.", id));
+                log.info("Student removed.");
             }
         }
 
@@ -68,7 +68,7 @@ public class StudentDao {
                 old.setFirstName(std.getFirstName());
                 old.setLastName(std.getLastName());
 
-                log.info(String.format("Student with Student Id: %d edited.", old.getId()));
+                log.info("Student edited.");
             }
         }
 
