@@ -25,12 +25,6 @@ public class StudentDao {
     private List<Student> studentList = new ArrayList<>();
 
     public List<Student> getStudentList() {
-        /*Student pedro = new Student();
-		pedro.setId(1);
-		pedro.setFirstName("Pedro");
-		pedro.setLastName("Gonzales");
-
-		return Arrays.asList(pedro);*/
         return studentList;
     }
 
@@ -46,9 +40,6 @@ public class StudentDao {
     }
 
     public Optional<Student> findStudent(Integer id) {
-
-        //studentList.stream().findAny().
-
         for (Student std : studentList) {
             if (std.getId().equals(id)) {
                 return Optional.of(std);
