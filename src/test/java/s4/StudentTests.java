@@ -4,6 +4,7 @@ package s4;
  * Created by carlos on 12/18/17.
  */
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +23,9 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-//import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
-
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -39,6 +36,20 @@ public class StudentTests {
 
     @MockBean
     private StudentService studentService;
+
+    @Before
+    public void setup() {
+
+    }
+
+    @Test
+    public void addStudentTest() throws Exception {
+        mvc.perform(post("/student/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"firstName\":\"John\", \"lastName\":\"Chesher\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.results.studentId", is(0)));
+    }
 
     @Test
     public void getStudentList() throws Exception {
@@ -53,7 +64,7 @@ public class StudentTests {
 
         mvc.perform(get("/student/list").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].firstName", is(pedro.getFirstName())));
+                .andExpect(jsonPath("$.results.students", hasSize(1)))
+                .andExpect(jsonPath("$.results.students[0].firstName", is(pedro.getFirstName())));
     }
 }
