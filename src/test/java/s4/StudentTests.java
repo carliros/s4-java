@@ -18,6 +18,7 @@ import s4.services.StudentService;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -39,7 +40,7 @@ public class StudentTests {
 
     @Test
     public void addStudentTest() throws Exception {
-        mvc.perform(post("/student/create")
+        mvc.perform(post("/students")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"firstName\":\"John\", \"lastName\":\"Chesher\"}"))
                 .andExpect(status().isOk())
@@ -55,9 +56,9 @@ public class StudentTests {
 
         List studentList = Arrays.asList(pedro);
 
-        given(studentService.getStudents()).willReturn(studentList);
+        given(studentService.getStudents(Optional.empty(), Optional.empty(), Optional.empty())).willReturn(studentList);
 
-        mvc.perform(get("/student/list").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/students").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.results.students", hasSize(1)))
                 .andExpect(jsonPath("$.results.students[0].firstName", is(pedro.getFirstName())));

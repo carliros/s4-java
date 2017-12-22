@@ -7,48 +7,53 @@ import s4.model.Student;
 import s4.model.Subject;
 import s4.services.StudentService;
 import s4.services.SubjectService;
-import s4.services.SubjectStudentService;
 import s4.utils.ResponseResult;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
  * Created by carlos on 12/18/17.
  */
 @RestController()
-@RequestMapping("subject")
+@RequestMapping
 public class SubjectController {
     @Autowired
     private SubjectService subjectService;
 
     @Autowired
-    private SubjectStudentService subjectStudentService;
-
-    @Autowired
     StudentService studentService;
 
-    @RequestMapping("/list")
-    public ResponseEntity<ResponseResult> list() {
-        return ResponseEntity.ok(new ResponseResult().returnValue("classes", subjectService.getSubjects()));
+    @RequestMapping("/classes")
+    public ResponseEntity<ResponseResult> list(@RequestParam(value = "code") Optional<String> code,
+                                               @RequestParam(value = "title") Optional<String> title,
+                                               @RequestParam(value = "description") Optional<String> description,
+                                               @RequestParam(value = "studentId") Optional<Integer> studentId) {
+
+        if (studentId.isPresent() && ! studentService.findStudent(studentId.get()).isPresent()) {
+            return ResponseEntity.ok(new ResponseResult().returnValue("error", "Student does not exist."));
+        }
+
+        return ResponseEntity.ok(new ResponseResult()
+                .returnValue("classes", subjectService.getSubjects(code, title, description, studentId)));
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @RequestMapping(value = "/classes", method = RequestMethod.POST)
     public ResponseEntity<ResponseResult> createSubject(@RequestBody Subject subject) {
 
         Integer studentId = subjectService.createSubject(subject);
         return ResponseEntity.ok(new ResponseResult().returnValue("subjectId", studentId));
     }
 
-    @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public ResponseEntity<ResponseResult> editSubject(@RequestBody Subject newSubject) {
+    @RequestMapping(value = "/classes/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<ResponseResult> editSubject(@PathVariable Integer id, @RequestBody Subject newSubject) {
 
-        Optional<Subject> subToEdit = subjectService.findSubject(newSubject.getId());
+        Optional<Subject> subToEdit = subjectService.findSubject(id);
 
         if (!subToEdit.isPresent()) {
             return ResponseEntity.ok(new ResponseResult().returnValue("error", "Class does not exist."));
         }
 
+        newSubject.setId(id);
         Optional<Integer> subjectEdited = subjectService.editSubject(newSubject);
 
         if (subjectEdited.isPresent()) {
@@ -58,13 +63,13 @@ public class SubjectController {
         }
     }
 
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/classes/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<ResponseResult> deleteSubject(@PathVariable Integer id) {
 
         Optional<Subject> subjectToDelete = subjectService.findSubject(id);
 
         if (!subjectToDelete.isPresent()) {
-            return ResponseEntity.ok(new ResponseResult().returnValue("error", "Subject does not exist."));
+            return ResponseEntity.ok(new ResponseResult().returnValue("error", "Class does not exist."));
         }
 
         Optional<Integer> subjectDeleted = subjectService.deleteSubject(subjectToDelete.get().getId());
@@ -72,7 +77,7 @@ public class SubjectController {
         if (subjectDeleted.isPresent()) {
             return ResponseEntity.ok(new ResponseResult().returnValue("subjectDeletedId", subjectDeleted.get()));
         } else {
-            return ResponseEntity.ok(new ResponseResult().returnValue("error", String.format("Subject %d can not be deleted", id)));
+            return ResponseEntity.ok(new ResponseResult().returnValue("error", String.format("Class %d can not be deleted", id)));
         }
     }
 
@@ -90,33 +95,5 @@ public class SubjectController {
 
         subjectService.registerStudent(subjectId, studentId);
         return ResponseEntity.ok(new ResponseResult().returnValue("message", String.format("Student %s registered for class %s", student.get().getFirstName(), subject.get().getTitle())));
-    }
-
-    @RequestMapping(value = "/retrieveSubjectsForStudent/{studentId}", method = RequestMethod.POST)
-    public ResponseEntity<ResponseResult> getSubjectsForStudent(@PathVariable Integer studentId) {
-        Optional<Student> student = studentService.findStudent(studentId);
-        if (!student.isPresent()) {
-            return ResponseEntity.ok(new ResponseResult().returnValue("error", "Student does not exist."));
-        }
-
-        List<Subject> subjectList = subjectStudentService.getSubjectsForStudent(studentId);
-        return ResponseEntity.ok(new ResponseResult()
-                .returnValue("subjectList", subjectList)
-                .returnValue("student", student.get().getFirstName()));
-    }
-
-    @RequestMapping("/searchByCode/{code}")
-    public ResponseEntity<ResponseResult> searchByCode(@PathVariable String code) {
-        return ResponseEntity.ok(new ResponseResult().returnValue("classes", subjectService.searchByCode(code)));
-    }
-
-    @RequestMapping("/searchByTitle/{title}")
-    public ResponseEntity<ResponseResult> searchByTitle(@PathVariable String title) {
-        return ResponseEntity.ok(new ResponseResult().returnValue("classes", subjectService.searchByTitle(title)));
-    }
-
-    @RequestMapping("/searchByDescription/{description}")
-    public ResponseEntity<ResponseResult> searchByDescription(@PathVariable String description) {
-        return ResponseEntity.ok(new ResponseResult().returnValue("classes", subjectService.searchByDescription(description)));
     }
 }
