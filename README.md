@@ -18,22 +18,41 @@ curl localhost:8080/student/list
 
 ### For Students
 
-1. `/student/list` method GET
-2. `/student/create` method POST
-2. `/student/edit` method POST
-2. `/student/delete/{id}` method POST
-2. `/student/searchByFirstName/{firstName}` method POST
-2. `/student/searchByLastName/{lastName}` method POST
-2. `/student/retrieveStudentsForClass/{subjectId}` method POST
+1. Get List of students
+ * Path: `/students` method GET
+ * Optional: search parameters
+    - firstName : String
+    - lastName : String
+    - classId : Integer
+ * Example: `/students?lastName=Gabriel&classId=1`
+   That will return all students of classId "1" with lastName "Gabriel".
+2. Create a student
+ * Path: `/students` method POST
+ * Register the fields on the body request (firstName, lastName).
+3. Edit a student
+ * Path: `/students/{studentId}` method PUT
+ * Register the fields on the body request (firstName, lastName).
+4. Delete a student
+ * Path: `/students/{studentId}` method DELETE
 
-### For Classes or Subjects
+### For Classes
 
-1. `/subject/list` method GET
-1. `/subject/create` method POST
-1. `/subject/edit` method POST
-1. `/subject/delete/{id}` method POST
-1. `/subject/register/{subjectId}/{studentId}` method POST
-1. `/subject/retrieveSubjectsForStudent/{studentId}` method POST
-1. `/subject/searchByCode/{code}` method POST
-1. `/subject/searchByTitle/{title}` method POST
-1. `/subject/searchByDescription/{description}` method POST
+1. Get list of classes
+ * Path `/classes` method GET
+ * Optional: search parameters
+    - code: String
+    - title: String
+    - description: String
+    - studentId: Integer
+ * Example: `/classes?studentId=2`
+   That will return al the classes that the student "2" has.
+2. Create a class 
+ * Path `/classes` method POST
+ * Register the fields in the body request (code, title, description)
+3. Edit a class 
+ * Path: `/classes/{classId}` method PUT
+ * Register the fields in the body request (code, title, description)
+4. Delete a class
+ * Path `/classes/{classId}` method DELETE
+5. Register a student into a class
+ * Path: `/register/{classId}/{studentId}` method POST
