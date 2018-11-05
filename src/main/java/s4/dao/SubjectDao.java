@@ -33,27 +33,21 @@ public class SubjectDao {
     }
 
     public Optional<Subject> findSubject(Integer id) {
-        for (Subject sub : subjectList) {
-            if (sub.getId().equals(id)) {
-                return Optional.of(sub);
-            }
-        }
-
-        return Optional.empty();
+        return subjectList.stream()
+                .filter(subject -> subject.getId().equals(id))
+                .findFirst();
     }
 
     public Optional<Integer> removeSubject(Integer id) {
-        for (int index = 0; index < subjectList.size(); index++) {
-            Subject sub = subjectList.get(index);
-            if (sub.getId().equals(id)) {
-                subjectList.remove(index);
-                log.info("Subject removed.");
+        boolean anyRemoved = subjectList.removeIf(subject -> subject.getId().equals(id));
 
-                return Optional.of(id);
-            }
+        if (anyRemoved) {
+            log.info("Subject removed.");
+            return Optional.of(id);
         }
-
-        return Optional.empty();
+        else {
+            return Optional.empty();
+        }
     }
 
     public Optional<Integer> editSubject(Subject sub) {

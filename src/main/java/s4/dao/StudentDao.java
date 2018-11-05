@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Component
 public class StudentDao {
@@ -40,38 +41,33 @@ public class StudentDao {
     }
 
     public Optional<Student> findStudent(Integer id) {
-        for (Student std : studentList) {
-            if (std.getId().equals(id)) {
-                return Optional.of(std);
-            }
-        }
-
-        return Optional.empty();
+        return studentList.stream()
+                .filter(student -> student.getId().equals(id))
+                .findFirst();
     }
 
     public Integer removeStudent(Integer id) {
-        for (int index = 0; index < studentList.size(); index++) {
-            Student std = studentList.get(index);
-            if (std.getId().equals(id)) {
-                studentList.remove(index);
+        studentList.removeIf(student -> {
+            boolean doesMatchId = student.getId().equals(id);
+            if (doesMatchId) {
                 log.info("Student removed.");
             }
-        }
+
+            return doesMatchId;
+        });
 
         return id;
     }
 
-    public Integer editStudent(Student std) {
-        for (int index = 0; index < studentList.size(); index++) {
-            Student old = studentList.get(index);
-            if (old.getId().equals(std.getId())) {
-                old.setFirstName(std.getFirstName());
-                old.setLastName(std.getLastName());
-
+    public Integer editStudent(Student newStudent) {
+        studentList.stream().forEach(oldStudent -> {
+            if (oldStudent.getId().equals(newStudent.getId())) {
+                oldStudent.setFirstName(newStudent.getFirstName());
+                oldStudent.setLastName(newStudent.getLastName());
                 log.info("Student edited.");
             }
-        }
+        });
 
-        return std.getId();
+        return newStudent.getId();
     }
 }
